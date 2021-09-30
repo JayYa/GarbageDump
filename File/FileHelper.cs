@@ -60,5 +60,29 @@ namespace File
 
             return true;
         }
+
+        /// <summary>
+        /// 将Base64字符串保存到文件
+        /// </summary>
+        /// <param name="base64String">Base64字符串</param>
+        /// <param name="filePath">文件路径</param>
+        public static void SaveBase64ToFile(string base64String, string filePath)
+        {
+            using (var fs = System.IO.File.Create(filePath))
+            {
+                int step = (4 * 1024 * 1024) * 1;
+                for (int i = 0; i < base64String.Length; i += step)
+                {
+                    int length = step;
+                    if (i + step > base64String.Length)
+                    {
+                        length = base64String.Length - i;
+                    }
+
+                    byte[] buffer = Convert.FromBase64String(base64String.Substring(i, length));
+                    fs.Write(buffer, 0, buffer.Length);
+                }
+            }
+        }
     }
 }
